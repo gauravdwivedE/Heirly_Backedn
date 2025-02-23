@@ -16,7 +16,7 @@ const { applicationModel } = require('./models/application.model')
 const { userModel } = require('./models/user.model')
 
 const corsOptions = {
-    origin:"http://localhost:5173",
+    origin:process.env.UI_ORIGIN,
     credentials: true
 }
 app.use(fileUpload({
