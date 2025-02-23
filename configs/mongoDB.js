@@ -3,7 +3,6 @@ const chalk = require('chalk');
 
 async function connectDB() {
   // Check if the environment variable is loaded correctly
-  console.log('MONGO_DB_URI:', process.env.MONGO_DB_URI); // Log the URI for debugging
   
   if (!process.env.MONGO_DB_URI) {
     console.log(chalk.red('MongoDB URI is not defined! Please check your environment variables.'));
