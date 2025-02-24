@@ -15,10 +15,14 @@ const { jobModel } = require('./models/job.model')
 const { applicationModel } = require('./models/application.model')
 const { userModel } = require('./models/user.model')
 
+console.log(process.env.UI_ORIGIN)
 const corsOptions = {
-    origin:process.env.UI_ORIGIN,
-    credentials: true
-}
+  origin: process.env.UI_ORIGIN, // Your frontend URL should be here, like 'https://yourfrontend.com'
+  credentials: true, // Allow cookies to be included in cross-origin requests
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allow headers for the request
+};
+
 app.use(fileUpload({
       useTempFiles: true,
       tempFileDir: "/tmp/",
