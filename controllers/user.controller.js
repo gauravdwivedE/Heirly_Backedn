@@ -35,12 +35,14 @@ module.exports.signup = async (req, res) =>{
     const payload = {id: user._id, role: user.role}  
     const token = jwt.sign(payload, process.env.JWT_SECRET)
 
-    res.status(201).cookie("token", token, {
-      maxAge: 1 * 24 * 60 * 60 * 1000, 
-      httpOnly: true, 
-      sameSite: 'Strict', 
-      secure: true, 
-    }).send(user)
+  res.status(201).cookie("token", token, {
+  maxAge: 1 * 24 * 60 * 60 * 1000, 
+  httpOnly: true, 
+  sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict', // Use 'None' for cross-origin in production
+  secure: process.env.NODE_ENV === 'production' ? true : false, // Only use secure cookies in production
+  path: '/', // Cookie is available throughout the entire app
+}).send(user);
+
     
   }catch(err){
     console.log(chalk.red(err));
@@ -74,12 +76,14 @@ module.exports.login = async (req, res) =>{
       profile: user.profile
     }
     
-    res.status(200).cookie("token", token, {
-      maxAge: 1 * 24 * 60 * 60 * 1000, 
-      httpOnly: true, 
-      sameSite: 'Strict', 
-      secure: true, 
-    }).send(user)
+  res.status(200).cookie("token", token, {
+  maxAge: 1 * 24 * 60 * 60 * 1000, 
+  httpOnly: true, 
+  sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict', // Use 'None' for cross-origin in production
+  secure: process.env.NODE_ENV === 'production' ? true : false, // Only use secure cookies in production
+  path: '/', // Cookie is available throughout the entire app
+}).send(user);
+
     
   }catch(err){
     console.log(chalk.red(err));
