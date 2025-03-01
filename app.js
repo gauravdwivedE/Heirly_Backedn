@@ -17,7 +17,7 @@ const { userModel } = require('./models/user.model')
 
 app.use(cors({
   origin: 'https://heirlycom.vercel.app', // Replace with your frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   credentials: true, // This is essential for sending/receiving cookies
 }));
 
