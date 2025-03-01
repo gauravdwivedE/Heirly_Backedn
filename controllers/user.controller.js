@@ -22,7 +22,10 @@ module.exports.signup = async (req, res) =>{
     }
  
     user = await userModel.create({ fullname, email, phoneNumber, password: hashedPass, role, profile: { profilePhoto: uploadResponse?.secure_url } })
-    
+
+    const payload = {id: user._id, role: user.role} ;
+    const token = jwt.sign(payload, process.env.JWT_SECRET);
+
     user = {
       id: user._id,
       fullname: user.fullname,
@@ -30,19 +33,15 @@ module.exports.signup = async (req, res) =>{
       phoneNumber: user.phoneNumber,
       email:user.email,
       profile: user.profile
-    }
+    };
 
-    const payload = {id: user._id, role: user.role}  
-    const token = jwt.sign(payload, process.env.JWT_SECRET)
-
-  res.status(201).cookie("token", token, {
-  maxAge: 1 * 24 * 60 * 60 * 1000, 
-  httpOnly: true, 
-  sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict', // Use 'None' for cross-origin in production
-  secure: process.env.NODE_ENV === 'production' ? true : false, // Only use secure cookies in production
-  path: '/', // Cookie is available throughout the entire app
-}).send(user);
-
+   
+  res.status(201).cookie('token', token, {
+     maxAge: 1 * 24 * 60 * 60 * 1000,  // Cookie expiration time (15 minutes)
+     httpOnly: true,  // Prevents JavaScript access to the cookie
+     secure: true,    // Always send the cookie over HTTPS (in production)
+     sameSite: 'None', // Required for cross-site cookies (when using CORS)
+  }).send(user);
     
   }catch(err){
     console.log(chalk.red(err));
@@ -64,8 +63,8 @@ module.exports.login = async (req, res) =>{
       
     if(user.role != role) return res.status(401).send("Account does't exist with current role")  
 
-    const payload = {id: user._id, role: user.role}  
-    const token = jwt.sign(payload,process.env.JWT_SECRET)
+    const payload = {id: user._id, role: user.role}  ;
+    const token = jwt.sign(payload,process.env.JWT_SECRET);
     
     user = {
       id: user._id,
@@ -74,16 +73,14 @@ module.exports.login = async (req, res) =>{
       phoneNumber: user.phoneNumber,
       email:user.email,
       profile: user.profile
-    }
+    };
     
-  res.status(200).cookie("token", token, {
-  maxAge: 1 * 24 * 60 * 60 * 1000, 
-  httpOnly: true, 
-  sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict', // Use 'None' for cross-origin in production
-  secure: process.env.NODE_ENV === 'production' ? true : false, // Only use secure cookies in production
-  path: '/', // Cookie is available throughout the entire app
-}).send(user);
-
+  res.status(200).cookie('token', token, {
+    maxAge: 1 * 24 * 60 * 60 * 1000,  
+    httpOnly: true,  // Prevents JavaScript access to the cookie
+    secure: true,    // Always send the cookie over HTTPS (in production)
+    sameSite: 'None', // Required for cross-site cookies (when using CORS)
+  }).send(user);
     
   }catch(err){
     console.log(chalk.red(err));
