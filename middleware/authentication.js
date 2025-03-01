@@ -1,8 +1,6 @@
 const chalk = require("chalk")
 const jwt = require("jsonwebtoken")
 
-module.exports = authentication
-
 const authentication = async (req, res, next) => {
   try {
     const token = req.cookies.token;
@@ -21,3 +19,5 @@ const authentication = async (req, res, next) => {
     res.status(500).send(err);
   }
 };
+
+module.exports = authentication
