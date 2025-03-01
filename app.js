@@ -15,10 +15,10 @@ const { jobModel } = require('./models/job.model')
 const { applicationModel } = require('./models/application.model')
 const { userModel } = require('./models/user.model')
 
-console.log(process.env.UI_ORIGIN)
 app.use(cors({
-  origin: 'https://heirlycom.vercel.app', // Adjust to your frontend domain
-  credentials: true, // Allow cookies to be sent with the request
+  origin: 'https://heirlycom.vercel.app/', // Replace with your frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true, // This is essential for sending/receiving cookies
 }));
 
 // const corsOptions = {
