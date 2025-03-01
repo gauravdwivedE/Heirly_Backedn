@@ -90,8 +90,12 @@ module.exports.login = async (req, res) =>{
 
 module.exports.logout = async (req, res) =>{
   try{
-      res.status(200).cookie("token", "" , {maxAge: 0}).send({message: "Logged out successfully"})
-  }
+res.status(200).cookie('token', '', {
+    maxAge: 0,        // Setting maxAge to 0 will immediately expire the cookie
+    httpOnly: true,   // Prevents JavaScript access to the cookie
+    secure: true,     // Always send the cookie over HTTPS (in production)
+    sameSite: 'None', // Ensures it works with cross-site cookies (when using CORS)
+  }).send({ message: 'Logged out successfully' });  }
   catch(err){
     res.send(500).send(err)
     console.log(chalk.red(err));
