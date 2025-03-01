@@ -16,20 +16,24 @@ const { applicationModel } = require('./models/application.model')
 const { userModel } = require('./models/user.model')
 
 console.log(process.env.UI_ORIGIN)
-const corsOptions = {
-  origin: process.env.UI_ORIGIN, // Your frontend URL should be here, like 'https://yourfrontend.com'
-  credentials: true, // Allow cookies to be included in cross-origin requests
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allow headers for the request
-};
+app.use(cors({
+  origin: 'https://heirlycom.vercel.app', // Adjust to your frontend domain
+  credentials: true, // Allow cookies to be sent with the request
+}));
+
+// const corsOptions = {
+//   origin: , // Your frontend URL should be here, like 'https://yourfrontend.com'
+//   credentials: true, // Allow cookies to be included in cross-origin requests
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+//   allowedHeaders: ['Content-Type', 'Authorization'], // Allow headers for the request
+// };
 
 app.use(fileUpload({
       useTempFiles: true,
       tempFileDir: "/tmp/",
-    })
-)
-app.use(cors(corsOptions))
-app.use(express.json({limit : '10mb'}))
+}))
+
+app.use(express.json({limit : '15mb'}))
 app.use(express.urlencoded({limit : '10mb', extended:true}))
 app.use(cookieParser())
 
@@ -38,17 +42,21 @@ app.use("/api/companies", companiesRouter)
 app.use("/api/jobs", jobRouter)
 app.use("/api/applications", applicationRouter)
 
-app.get("/",async (req, res) =>{
-   try {
-    await companyModel.deleteMany({})
-    await jobModel.deleteMany({})
-    await applicationModel.deleteMany({})
-    await userModel.deleteMany({})
-    res.send("deleted")
-   } catch (error) {
-    res.send(error)
-   }
-})
+app.get('/set-cookie', (req, res) => {
+  // Set the cookie with secure and sameSite settings
+  try{
+    res.status(200).cookie('user', 'JohnDoe', {
+    maxAge: 900000,  // Cookie expiration time (15 minutes)
+    httpOnly: true,  // Prevents JavaScript access to the cookie
+    secure: true,    // Always send the cookie over HTTPS (in production)
+    sameSite: 'None', // Required for cross-site cookies (when using CORS)
+  }).send('Cookie has been set');
+  }
+  catch(err){
+    res.status(500).send(err)
+  }
+});
+
 const port  = process.env.PORT || 8000
 
 app.listen(port,()=>{   
